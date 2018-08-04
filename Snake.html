@@ -1,0 +1,353 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style type='text/css'>
+        body {
+            background-image: url('arcade.jpg');
+            background-size: cover;
+            width: 99vw;
+            height: 97vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        button {
+            background-color: #FFFFFF;
+            padding: 0.6em;
+            border-radius: 20pt;
+            border-width: 2pt;
+            border-color: #22BBCC;
+            font-size: 13pt;
+            font-family: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif;
+            color: #22BBCC;
+            height: auto;
+            width: 250px;
+            margin-top: 2vw;
+        }
+
+        div.piece {
+            display: inline-block;
+            box-sizing: border-box;
+        }
+
+        div#container {
+            width: 80vw;
+            height: 80vh;
+            background-color: brown;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        div#board {
+            position: relative;
+            background-color: red;
+            width: 800px;
+            height: 600px;
+
+        }
+
+        #title {
+            font-size: 10ex;
+        }
+
+        .snake {
+            background-color: yellow;
+        }
+
+        .frontSnake {
+            background-color: green;
+        }
+
+        .apple {
+            background-color: purple;
+        }
+
+        .gameisover {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+        }
+    </style>
+
+</head>
+
+
+<body>
+    <div id='title'>Snake</div>
+    <div id='pointstext'>Your Snake's Length:
+        <span id='points'>4</span>
+    </div>
+    <div id="container">
+        <div id="board">
+            <div id='gameover' class='gameisover'>Game Over</div>
+            <div id='plsrestart' class='gameisover'>Please Restart</div>
+            <div id='snake'>
+            </div>
+        </div>
+    </div>
+    <button id='reset'>Reset Game</button>
+    <script type="text/javascript">
+        let game = {
+            gameover: false,
+            points: 4,
+            snake: [],
+            apple: {
+                location: 0,
+            },
+            dir: 1,
+            ANIME: null,
+        }
+
+        let snakeLength = 4;
+
+        function init() {
+
+            let reset = document.getElementById('reset');
+            reset.addEventListener('mouseup', resetPressed);
+
+            let gamearea = document.getElementById('board');
+
+            const numRows = 25;
+            const numCols = 25;
+
+            let count = 0;
+            for (let y = 0; y < numRows; y++) {
+                for (let x = 0; x < numCols; x++) {
+
+                    let piece = document.createElement('div');
+                    piece.className = "piece";
+                    piece.id = count;
+                    piece.style.width = (100 / numCols) + '%';
+                    piece.style.height = (100 / numRows) + '%';
+
+                    gamearea.appendChild(piece);
+                    count++;
+                }
+            }
+            let gameboard = document.getElementsByClassName("piece");
+
+            let snake = document.getElementsByClassName('piece');
+
+            let front = Math.floor(numRows * numCols / 2);
+            for (let length = 0; length < 4; length++) {
+                game.snake.push(front - length);
+
+                let id = "" + (front - length);
+                document.getElementById(id).classList.add('snake');
+                if (length == 0) {
+                    document.getElementById(id).classList.add('frontSnake');
+                }
+            }
+
+            addEventListener('keydown', keypressed);
+
+
+            /* for (let p = 0; p <= 624; p++) {
+                 snake[p] = 0;
+             }
+             
+             //back of snake
+             
+             snake[game.snake.back].innerHTML = '4';
+             snake[0].style.backgroundColor = 'yellow';
+             
+             //second to last of snake
+             
+
+             //front of snake
+             snake[3].innerHTML = '1';
+             snake[3].style.backgroundColor = 'yellow';
+
+             for (i = 1; i < 3; i++) {
+                 snake[i].innerHTML = "2";
+                 snake[i] = 1;
+                 snake[i].style.backgroundColor = 'yellow';
+             }*/
+
+
+            game.apple.location = Math.floor(Math.random() * 624);
+            document.getElementById("" + game.apple.location).classList.add('apple');
+
+            game.ANIME = setInterval(nextFrame, 250);
+        }
+
+        let piece = document.getElementsByClassName('piece');
+
+
+        function resetPressed(evt) {
+            location.reload();
+
+        }
+
+        function nextFrame() {
+            //deletes the last object from snake
+            let redNumber = game.snake.pop();
+            //deletes the last object from the class
+            let redSpace = document.getElementById("" + redNumber).classList.remove('snake');
+
+            let gameboard = document.getElementsByClassName("piece");
+
+            //removes the frontsnake class from the former front tile
+            let frontNumber = game.snake[0];
+            document.getElementById("" + frontNumber).classList.remove('frontSnake');
+
+            //if the head crashes into the wall
+            frontNumber += game.dir;
+
+            for (let x = 0; x < 25; x++) {
+                if (frontNumber == gameboard[x] && game.dir == -25) {
+                    game.gameover = true
+                    console.log('pewidpie');
+                }
+                if (frontNumber == gameboard[x + (25 * 24)] && game.dir == 25) {
+                    game.gameover = true
+                }
+            }
+
+            for (let x = 0; x < 25; x += 25) {
+                if (frontNumber == gameboard[x] && game.dir == -1) {
+                    game.gameover = true;
+                }
+                if (frontNumber == gameboard[x + 24] && game.dir == 1) {
+                    game.gameover = true
+                }
+            }
+
+            // for (let x=0; x<25; x++){
+            //     
+            // }  
+
+            // for (let x; x<Math.ceil((gameboard.length/numRows)/10)*10; i++){
+            //     if (frontNumber == gameboard[x] && game.dir == 1){
+            //         game.gameover = true
+            //     }
+            // }       
+
+
+          
+
+            if (frontNumber == game.apple.location) {
+                document.getElementById(game.apple.location).classList.remove('apple');
+                game.apple.location = Math.floor(Math.random() * 624);
+                document.getElementById("" + game.apple.location).classList.add('apple');
+                game.snake.push(frontNumber - snakeLength);
+                uptdatePoints();
+            }
+
+
+
+
+
+            if (frontNumber < 0 || frontNumber > 25 * 25) {
+                // snake collided with the top or bottom
+                game.gameover = true;
+            } else {
+            
+                // crash into itself
+                for (let i = 0; game.snake.length > i; i++) {
+                    if (frontNumber == game.snake[i]) {
+                        game.gameover = true;
+                        console.log('asdf');
+                    }
+                }
+            }
+            
+
+            
+            if (game.gameover == true) {
+                let piece = document.getElementsByClassName('piece');
+                let over = document.getElementsByClassName('gameisover');
+                console.log('gameover');
+
+                for (let i = 0; i < 2; i++) {
+                    over[i].style.display = 'flex';
+                }
+
+                for (let i = 0; i < 625 ; i++) {
+                    piece[i].style.backgroundColor = 'red';
+                }                
+
+                clearInterval( game.ANIME);
+            }
+            else {
+                //creates a new front of snake
+                game.snake.unshift(frontNumber);
+                //adds it to both classes
+                document.getElementById("" + frontNumber).classList.add('snake');
+                document.getElementById("" + frontNumber).classList.add('frontSnake');
+            }
+
+
+        }
+        
+        function uptdatePoints() {
+            game.points++
+                let points = document.getElementById('points')
+            points.innerHTML = game.points;
+        }
+
+        window.onload = init();
+
+
+
+
+        let gameboard = document.getElementsByClassName("piece");
+
+        function scorePoints() {}
+
+        function keypressed(e) {
+            if (e.keyCode == 68) {
+                if (game.dir == 25 || game.dir == -25) {
+                    game.dir = 1;
+                }
+            }
+            if (e.keyCode == 65) {
+                if (game.dir == 25 || game.dir == -25) {
+                    game.dir = -1;
+                }
+            }
+            if (e.keyCode == 87) {
+                if (game.dir == 1 || game.dir == -1) {
+                    game.dir = -25;
+                }
+            }
+            if (e.keyCode == 83) {
+                if (game.dir == 1 || game.dir == -1) {
+                    game.dir = 25;
+                }
+            }
+            if (e.keyCode == 39) {
+                if (game.dir == 25 || game.dir == -25) {
+                    game.dir = 1;
+                }
+            }
+            if (e.keyCode == 37) {
+                if (game.dir == 25 || game.dir == -25) {
+                    game.dir = -1;
+                }
+            }
+            if (e.keyCode == 38) {
+                if (game.dir == 1 || game.dir == -1) {
+                    game.dir = -25;
+                }
+            }
+            if (e.keyCode == 40) {
+                if (game.dir == 1 || game.dir == -1) {
+                    game.dir = 25;
+                }
+            }
+        }
+
+
+    </script>
+    <embed src="music.mp3" autostart="true" loop="true" hidden="true"></embed>
+</body>
+
+
+
+</html>
