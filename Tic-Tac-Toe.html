@@ -1,0 +1,229 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style type='text/css'>
+        div.Top {
+            display: flex;
+            justify-content: center;
+        }
+
+        #reset {
+            background-color: #FFFFFF;
+            padding: 0.6em;
+            border-radius: 20pt;
+
+            border: 2pt solid #22BBCC;
+            font-size: 13pt;
+            color: black;
+            height: auto;
+            width: 125px;
+            margin-top: 2vw;
+            display: flex;
+            align-self: center;
+            justify-content: center;
+        }
+
+        #reset:hover {
+            background-color: aquamarine;
+            color: black;
+        }
+
+        div.Boxes {
+            display: grid;
+            grid-template-areas: "One Two Three" "Four Five Six" "Seven Eight Nine";
+            width: 115ex;
+            height: 115ex;
+            align-self: center;
+        }
+
+        div.Box {
+            border: 2px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
+            font-size: 2em;
+
+        }
+
+        div.Box:hover {
+            background-color: aquamarine;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+
+<body>
+    <div class='Top'>
+        <h1>Tic-Tac-Toe</h1>
+    </div>
+    <div class='Boxes'>
+        <div class='Box' id="0">
+        </div>
+        <div class='Box' id="1">
+        </div>
+        <div class='Box' id="2">
+        </div>
+        <div class='Box' id="3">
+        </div>
+        <div class='Box' id="4">
+        </div>
+        <div class='Box' id="5">
+        </div>
+        <div class='Box' id="6">
+        </div>
+        <div class='Box' id="7">
+        </div>
+        <div class='Box' id="8">
+        </div>
+
+    </div>
+    <div id="reset">Reset Game</div>
+    <script type='text/javascript'>
+        let game = {
+            turn: -1,
+            players: ['X', 'O'],
+            gameover: false,
+            spots: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        }
+
+        function init() {
+            let buttons = document.getElementsByClassName('Box');
+            for (let button = 0; button < game.spots.length; button++) {
+                buttons[button].addEventListener('mouseup', buttonPressed);
+            }
+            let reset = document.getElementById('reset');
+            reset.addEventListener('mouseup', resetPressed);
+        }
+
+        function updateBoard(board) {
+            let buttons = document.getElementsByClassName('Box');
+
+            for (let i = 0; i < buttons.length; i++) {
+                if (game.spots[i] == 1) {
+                    buttons[i].innerHTML = 'O'
+                } else if (game.spots[i] == 0) {
+                    buttons[i].innerHTML = ''
+                } else if (game.spots[i] == -1) {
+                    buttons[i].innerHTML = 'X'
+                }
+            }
+        }
+
+        function buttonPressed(evt) {
+            let spot = parseInt(evt.target.id);
+            makeMove(spot);
+            updateBoard(game.spots);
+            // checkWinner(game.spots);
+
+            let winner = checkWinner(game.spots);
+            
+            
+                if (winner == 'O') {
+                    alert('O has won')
+                }
+                else if (winner == 'X') {
+                    alert('X has won')
+                }
+                else if (winner == 'Tie') {
+                    alert('It is a tie')
+                }
+            }
+
+        
+
+        function resetPressed(evt) {
+            game.spots = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+            game.turn = -1;
+            game.gameover = false;
+            updateBoard(game.spots);
+        }
+
+        function makeMove(spot) {
+            if (game.spots[spot] == 0 && game.gameover == false) {
+                game.spots[spot] = game.turn
+                game.turn = -game.turn;
+            }
+
+        }
+
+        function checkWinner(board) {
+            let rows = Math.sqrt(board.length);
+            let cols = rows;
+            for (let row = 0; row < board.length; row += rows) {
+                let rowSum = 0;
+                for (let spot = row; spot < row + rows; spot++) {
+                    rowSum += board[spot];
+                }
+                if (rowSum == rows) {
+                    game.gameover = true;
+                    return 'O';
+                }
+
+                if (rowSum == -rows) {
+                    game.gameover = true;
+                    return 'X';
+                }
+            }
+            for (let col = 0; col < cols; col += 1) {
+                let colSum = 0
+
+                for (let spot = col; spot < game.spots.length; spot += 3) {
+                    colSum += game.spots[spot];
+                }
+                if (colSum == cols) {
+                    game.gameover = true;
+                    return 'O';
+                }
+                if (colSum == -cols) {
+                    game.gameover = true;
+                    return 'X';
+                }
+            }
+            
+            let diagsum1 = 0;
+            for (let spot=0; spot<game.spots.length; spot+=rows+1) {
+                diagsum1+=game.spots[spot];
+            }
+            if ( diagsum1==cols) {
+                game.gameover=true;
+                return 'O';
+            }
+            if ( diagsum1==-cols) {
+                game.gameover=true;
+                return 'X';
+            }
+
+            let diagsum2 = 0;
+
+            for (let spot=2; spot<game.spots.length-cols+1; spot+=rows-1) {
+                diagsum2+=game.spots[spot];
+            }
+            if ( diagsum2==cols) {
+                game.gameover=true;
+                return 'O';
+            }
+            if ( diagsum2==-cols) {
+                game.gameover=true;
+                return 'X';
+            }
+
+            for (let i=0; i<game.spots.length; i++){
+                if (game.spots[i]==0){
+                    return 'Not-Tie'
+                }
+            }
+            game.gameover=true;
+            return 'Tie';
+        }
+        window.onload = init;
+    </script>
+</body>
+
+</html>

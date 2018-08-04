@@ -1,0 +1,309 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style type='text/css'>
+        #gamearea{
+        width: 40%;
+        height: 90%;
+        border: 3px solid black;
+        position: relative;
+        }
+        body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        background-image: url("Ripple_background.jpeg");
+        background-size: cover;
+
+        }
+        #ball {
+        width: 25px;
+        height: 25px;
+        background-color: #32CD32;
+        border-radius: 100%;
+
+        position: absolute;
+        left:50%;
+        top:50%;
+        
+        }
+        #player1 {
+            font-size: 3ex;
+        }
+        #player2 {
+            font-size: 3ex;
+        }
+        #paddle1 {
+            position: absolute;
+            top: 10px;
+            left:35%;
+            width: 30%;
+            height:3%;
+            background-color: #83e5c0;
+            
+        }
+        #paddle2 {
+            position: absolute;
+            bottom: 10px;
+            left:35%;
+            width: 30%;
+            height:3%;
+            background-color:#83e5c0;
+            
+        }
+
+    </style>
+
+</head>
+
+<body>
+    <div id='scoreboard'>
+        <div id='player1'>
+            Player 1: <span id='p1score'>0</span>
+        </div>
+
+        <div id='player2'>
+            Player 2: <span id='p2score'>0</span>
+        </div>
+    </div>
+    <div id='gamearea'>
+        <div id='paddle1'>
+        </div>
+
+
+        <div id='ball'>
+        </div>
+
+        <div id='paddle2'>
+        </div>
+
+
+
+
+
+
+    </div>
+    </br>
+
+
+
+
+
+    <script type='text/javascript'>
+        let game = {
+            p1score: 0,
+            p2score: 0,
+            ball : {
+                velX: 6,
+                velY: 6,
+                top: 0,
+                left:0,
+                width: 25,
+                height: 25,
+                graphic: null
+            },
+            paddle1 : {
+                velX: 0,
+                velY: 0,
+                top: 0,
+                left:0,
+                width: -1,
+                height: -1,
+                graphic: null
+            },
+            paddle2 : {
+                velX: 0,
+                velY: 0,
+                top: 0,
+                left:0,
+                width: -1,
+                height: -1,
+                graphic: null
+            },
+
+        }
+
+        function init(){
+            let gamearea= document.getElementById('gamearea');
+            let ball= document.getElementById('ball');
+            
+            
+            game.ball.width= ball.clientWidth;
+            game.ball.height= ball.clientHeight;
+            game.ball.top= gamearea.clientHeight/2 - game.ball.height/2;
+            game.ball.left= gamearea.clientWidth/2 - game.ball.width/2;
+            game.ball.graphic=ball;
+
+            let paddle1= document.getElementById('paddle1');
+              game.paddle1.width= paddle1.clientWidth;
+            game.paddle1.height= paddle1.clientHeight;
+            game.paddle1.top = paddle1.offsetTop;
+            game.paddle1.left= paddle1.offsetLeft;
+            game.paddle1.graphic=paddle1;
+
+             let paddle2= document.getElementById('paddle2');
+              game.paddle2.width= paddle2.clientWidth;
+            game.paddle2.height= paddle2.clientHeight;
+            game.paddle2.top= paddle2.offsetTop;
+            game.paddle2.left= paddle2.offsetLeft;
+            game.paddle2.graphic=paddle2;
+
+            document.addEventListener('keydown', handleKeyDown);
+            document.addEventListener('keyup', handleKeyUp);
+
+            game.ball.graphic.style.top= game.ball.top + 'px';
+            game.ball.graphic.style.left= game.ball.left + 'px';
+
+            game.paddle1.graphic.style.left= game.paddle1.left + 'px';
+            game.paddle2.graphic.style.left= game.paddle2.left + 'px';
+            setInterval(nextFrame, 13);
+        }
+
+        function handleKeyDown(evt){
+           
+            if(evt.keyCode == 37)
+            {
+                game.paddle1.velX = -5;
+            }
+            if(evt.keyCode == 39)
+            {
+                game.paddle1.velX = 5;
+            }
+
+            if(evt.keyCode == 65)
+            { 
+                game.paddle2.velX = -5;
+            }
+            if(evt.keyCode == 68)
+            {
+                game.paddle2.velX = 5;
+            }
+        }
+
+        function handleKeyUp(evt){
+           
+           if(evt.keyCode == 37)
+           {
+               game.paddle1.velX = 0;
+           }
+           if(evt.keyCode == 39)
+            {
+                game.paddle1.velX = 0;
+            }
+
+            if(evt.keyCode == 65)
+           {
+               game.paddle2.velX = 0;
+           }
+           if(evt.keyCode == 68)
+            {
+                game.paddle2.velX = 0;
+            }
+        }
+
+        function nextFrame() {
+            game.ball.left=game.ball.left + game.ball.velX;
+            game.ball.top=game.ball.top + game.ball.velY;
+            game.paddle1.left += game.paddle1.velX;
+            game.paddle2.left += game.paddle2.velX;
+
+            let gamearea = document.getElementById('gamearea');
+
+            let ballBottom = game.ball.top+ game.ball.height;
+            let ballRight = game.ball.left+ game.ball.width;
+
+            if( ballBottom>gamearea.clientHeight){
+                game.ball.velY = game.ball.velY*-1;
+                game.ball.top=gamearea.clientHeight-game.ball.height;
+
+                game.p1score++;
+                let p1score = document.getElementById('p1score');
+                p1score.innerHTML = game.p1score;
+                game.ball.top= gamearea.clientHeight/2 - game.ball.height/2;
+                game.ball.left= gamearea.clientWidth/2 - game.ball.width/2;
+            }
+            if( ballRight>gamearea.clientWidth){
+                game.ball.velX = game.ball.velX * -1;
+                game.ball.left=gamearea.clientWidth-game.ball.width;
+            }
+            if(game.ball.top<0) {
+                game.ball.velY=game.ball.velY *-1;
+                game.ball.top = 0;
+                game.p2score++;
+                let p2score = document.getElementById('p2score');
+                p2score.innerHTML = game.p2score;
+                game.ball.top= gamearea.clientHeight/2 - game.ball.height/2;
+                game.ball.left= gamearea.clientWidth/2 - game.ball.width/2;
+
+            }
+            if(game.p1score==5){
+                alert ("Player 1 wins")
+                location.reload();
+
+            }
+            if(game.p2score==5){
+                alert ("Player 2 wins")
+                location.reload();
+
+            }
+
+            if (game.paddle1.left<0){
+                game.paddle1.left=0;
+                game.paddle1.velX=0;
+            }
+            if (game.paddle1.left+game.paddle1.width>gamearea.clientWidth){
+                game.paddle1.left=gamearea.clientWidth-game.paddle1.width;
+                game.paddle1.velX=0;
+            }
+            if (game.paddle2.left<0){
+                game.paddle2.left=0;
+                game.paddle2.velX=0;
+            }
+            if (game.paddle2.left+game.paddle2.width>gamearea.clientWidth){
+                game.paddle2.left=gamearea.clientWidth-game.paddle2.width;
+                game.paddle2.velX=0;
+            }
+
+
+            
+            if(game.ball.left<0) {
+                game.ball.velX=game.ball.velX *-1;
+                game.ball.left = 0
+            }
+
+            //Ball Collides with the Bottom of Paddle1
+            if(game.ball.top < game.paddle1.top + game.paddle1.height && game.paddle1.left < game.ball.left + game.ball.width && game.ball.left < game.paddle1.left + game.paddle1.width){
+                game.ball.top = game.paddle1.top + game.paddle1.height
+                game.ball.velY *= -1;
+            }
+            if(game.ball.top+game.ball.height > game.paddle2.top && game.ball.left + game.ball.width > game.paddle2.left && game.ball.left < game.paddle2.left + game.paddle2.width){
+                game.ball.top=game.paddle2.top-game.ball.height
+                game.ball.velY *= -1;
+            }
+           
+
+            game.ball.graphic.style.top= game.ball.top+'px';
+            game.ball.graphic.style.left= game.ball.left+'px';
+
+            game.paddle1.graphic.style.left= game.paddle1.left + 'px';
+            game.paddle2.graphic.style.left= game.paddle2.left + 'px';
+
+        }
+        window.onload = init;
+        
+    </script>
+
+
+</body>
+
+
+
+
+
+
+
+
+</html>

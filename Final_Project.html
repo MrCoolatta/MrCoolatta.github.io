@@ -1,0 +1,165 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style type='text/css'>
+    #page {
+        display: grid;
+        grid-template-columns: 10% 40% 40% 10%;
+        grid-template-rows: 20% 75% 5%;
+        grid-template-areas: 
+        "title title title title"
+        ". games games ."
+        "footer footer footer footer";
+        width: 97vw;
+        height:96vh;
+        border: 12px groove #56B1BF;
+       
+    }
+    #top {
+        grid-area: title;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size:5em
+    }
+
+    #bottom {
+        grid-area: footer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+
+    }
+    #games{
+        border: 4px solid #56B1BF;
+        grid-area:games;
+        display: grid;
+        grid-template-columns: 50% 50%;
+        grid-template-areas: 
+        "snake flappy"
+    }
+    #flappy {
+        border: 4px solid #56B1BF;
+        grid-area: flappy;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        
+    }
+    #playflappy {
+            background-color: #FFFFFF;
+            padding: 0.6em;
+            border-radius: 20pt;
+
+            border: 2pt solid #22BBCC;
+            font-size: 13pt;
+            color: black;
+            height: auto;
+            width: 125px;
+            margin-top: 2vw;
+            display: flex;
+            align-self: center;
+            justify-content: center;
+        }
+
+     #playsnake {
+        background-color: #FFFFFF;
+        padding: 0.6em;
+        border-radius: 20pt;
+
+        border: 2pt solid #22BBCC;
+        font-size: 13pt;
+        color: black;
+        height: auto;
+        width: 125px;
+        margin-top: 2vw;
+        display: flex;
+        align-self: center;
+        justify-content: center;
+        }
+
+    #playsnake:hover{
+        background: #56B1BF;
+        color: #fff;
+        border: 4px solid #56B1BF;
+        border-radius: 50px;
+    }
+
+    #snake {
+        border: 4px solid #56B1BF;
+        grid-area: snake;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+
+    }
+    
+    #playflappy:hover{
+        background: #56B1BF;
+        color: #fff;
+        border: 4px solid #56B1BF;
+        border-radius: 50px;
+    }
+    #subtitle{
+        font-size: 3em;
+        border-bottom: 4px solid #56B1BF;
+    }
+    body {
+        background-image:url('arcade.jpg');
+        background-size: cover;
+    }
+    </style>
+</head>
+
+<body>
+    <div id='page'>
+        <div id='top'>The Arcade</div>
+        <div id="games">
+            <div id='flappy'>
+                <div id='subtitle'>Flappy Appa</div>
+                </br>
+                <img src="appa.gif" alt="flappy" width="700" height='500'>
+                <a id="playflappy" href="flappyBird.html">Play!</a>
+                </br>
+                </br>
+                <div id="description"> Come play our take on the 2013 game, Flappy Bird! Press space bar to flap. Try and make it thropugh the pipes!</div>
+            </div>
+            <div id='snake'>
+                <div id='subtitle'>Snake</div>
+                </br>
+                <img src="snake.gif" alt="snake" width="500" height="500">
+                <a id="playsnake" href="Snake.html">Play!</a>
+                </br>
+                </br>
+                <div id="description">Come play our take on the 1997 game, snake! Use arrows keys or WASD to move the snake. Grow your snake by eating apples and try not to collide with yourself or the walls, the longer your snake is, the harder the game gets!.</div>
+            </div>
+        </div>
+
+        <div id='bottom'></div>
+    </div>
+
+        <script type='text/javascript'>
+            let playflappy = document.getElementById('playflappy');
+            playflappy.addEventListener('mouseup', playflappyPressed);
+            function playflappyPressed(evt) {
+
+            }
+            function init() {
+                let playflappy = document.getElementById('playflappy');
+                playflappy.addEventListener('mouseup', playflappyPressed);
+                function playflappyPressed(evt) {
+                    console.log('hello')
+                }
+            }
+
+
+            
+
+        </script>
+</body>
+
+
+</html>

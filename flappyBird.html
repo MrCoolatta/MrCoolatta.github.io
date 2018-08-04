@@ -1,0 +1,389 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Flappy Appa</title>
+    <style type='text/css'>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 98vw;
+            height: 95vh;
+            background-image:url('arcade.jpg');
+            background-size: cover;
+        }
+
+        #gamearea {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
+            width: 500;
+            height: 100%;
+            border: 5px solid #776677;
+            position: relative;
+            background-image: url(sky.png);
+            background-repeat: no-repeat;
+            background-position: left center;
+            overflow: hidden;
+        }
+
+        #appa {
+            width: 60px;
+            height: 45px;
+            border-radius: 50%;
+            background-image: url('appa.gif');
+            background-size: cover;
+            position: absolute;
+            top: 45%;
+            left: 20%;
+        }
+        body {
+            background-color: grey;
+        }
+        #ground {
+            position: absolute;
+            top: 90%;
+            width: 100%;
+            height: 10%;
+            background-image: url(https://flappycreator.com/default/ground.png);
+            z-index: 10;
+        }
+
+        .onethree {
+            position: absolute;
+            top: 0px;
+            left: 90%;
+            width: 10%;
+            height: 600px;
+            background-color: blue;
+            z-index: 5;
+        }
+
+        .twofour {
+            position: absolute;
+            bottom: -550px;
+            left: 90%;
+            width: 10%;
+            height: 600px;
+            background-color: blue;
+            z-index: 5;
+        }
+
+        button {
+            background-color: #FFFFFF;
+            padding: 0.6em;
+            border-radius: 20pt;
+            border-width: 2pt;
+            border-color: #22BBCC;
+            font-size: 13pt;
+            font-family: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif;
+            color: #22BBCC;
+            height: auto;
+            width: 250px;
+            margin-top: 2vw;
+        }
+
+        .gameoverrestart {
+            font-size: 50px;
+            justify-content: center;
+            align-items: center;
+            display: none;
+            z-index: 15;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="title">Flappy Appa</div>
+    <div id='pointstext'>Points:
+        <span id='points'>0</span>
+    </div>
+    <div id="gamearea">
+        <div id='appa'></div>
+        <div id='ground'></div>
+        <div class='obstacle onethree' class='obstactle' id='obstacle1'></div>
+        <div class='obstacle twofour' class='obstactle' id='obstacle2'></div>
+        <div class='obstacle onethree' class='obstactle' id='obstacle3'></div>
+        <div class='obstacle twofour' class='obstactle' id='obstacle4'></div>
+        <div class='gameoverrestart'>GAME OVER</div>
+        <div class='gameoverrestart'>PLEASE RESTART</div>
+    </div>
+    <button id="restart">Restart</button>
+
+    <script type='text/javascript'>
+        let game = {
+            gameover: false,
+            points: 0,
+            appa: {
+                velY: 0,
+                top: 0,
+                left: 0,
+                height: 0,
+                width: 0,
+                graphic: null
+            },
+            obstacle1: {
+                velX: 0,
+                top: 0,
+                left: 0,
+                height: 0,
+                width: 0,
+                graphic: null
+            },
+            obstacle2: {
+                velX: 0,
+                top: 0,
+                left: 0,
+                height: 0,
+                width: 0,
+                graphic: null
+            },
+            obstacle3: {
+                velX: 0,
+                top: 0,
+                left: 0,
+                height: 0,
+                width: 0,
+                graphic: null
+            },
+            obstacle4: {
+                velX: 0,
+                top: 0,
+                left: 0,
+                height: 0,
+                width: 0,
+                graphic: null
+            },
+            ground: {
+                velX: 0,
+                top: 0,
+                left: 0,
+                height: 0,
+                width: 0,
+                graphic: null
+            },
+            
+        }
+
+        function init() {
+            let points = document.getElementById('points');
+            let gamearea = document.getElementById('gamearea');
+
+            let bottom1 = Math.floor(Math.random() * 400) + 1;
+            bottom1 *= -1;
+
+            let bottom2 = Math.floor(Math.random() * 400) + 1;
+            bottom2 *= -1;
+
+            let appa = document.getElementById('appa');
+            game.appa.height = appa.clientHeight;
+            game.appa.width = appa.clientWidth;
+            game.appa.top = gamearea.clientHeight / 2 - game.appa.height / 2
+            game.appa.left = gamearea.clientWidth / 2 - (game.appa.width / 2 + 50)
+            game.appa.graphic = appa;
+
+
+
+
+
+            let obstacle1 = document.getElementById('obstacle1');
+            game.obstacle1.height = obstacle1.clientHeight;
+            game.obstacle1.width = obstacle1.clientWidth;
+            game.obstacle1.top = bottom1;
+            game.obstacle1.left = 1000;
+            game.obstacle1.graphic = obstacle1;
+
+
+            let obstacle2 = document.getElementById('obstacle2');
+            game.obstacle2.height = obstacle2.clientHeight;
+            game.obstacle2.width = obstacle2.clientWidth;
+            game.obstacle2.top = game.obstacle1.top + 770;
+            game.obstacle2.left = 1000;
+            game.obstacle2.graphic = obstacle2;
+
+            let obstacle3 = document.getElementById('obstacle3');
+            game.obstacle3.height = obstacle3.clientHeight;
+            game.obstacle3.width = obstacle3.clientWidth;
+            game.obstacle3.top = bottom2;
+            game.obstacle3.left = 1500;
+            game.obstacle3.graphic = obstacle3;
+
+            let obstacle4 = document.getElementById('obstacle4');
+            game.obstacle4.height = obstacle4.clientHeight;
+            game.obstacle4.width = obstacle4.clientWidth;
+            game.obstacle4.top = game.obstacle3.top + 770;
+            game.obstacle4.left = 1500;
+            game.obstacle4.graphic = obstacle4;
+
+            let ground = document.getElementById('ground');
+            game.ground.top = ground.offsetTop;
+            game.ground.height = ground.clientHeight;
+            game.ground.width = ground.clientWidth;
+
+
+            addEventListener('keydown', keypressed);
+            // addEventListener('keyup', keyrelease);
+
+            game.obstacle1.graphic.style.top = game.obstacle1.top + 'px';
+            game.obstacle1.graphic.style.left = game.obstacle1.left + 'px';
+
+            game.obstacle2.graphic.style.top = game.obstacle2.top + 'px';
+            game.obstacle2.graphic.style.left = game.obstacle2.left + 'px';
+
+            game.obstacle3.graphic.style.top = game.obstacle3.top + 'px';
+            game.obstacle3.graphic.style.left = game.obstacle3.left + 'px';
+
+            game.obstacle4.graphic.style.top = game.obstacle4.top + 'px';
+            game.obstacle4.graphic.style.left = game.obstacle4.left + 'px';
+
+            setInterval(nextFrame, 16)
+        }
+
+        function keypressed(e) {
+            if (e.keyCode == 32) {
+                game.appa.velY = -9;
+            }
+        }
+
+        function nextFrame() {
+
+
+            game.appa.velY += 0.7;
+
+            game.obstacle1.velX = -5;
+            game.obstacle2.velX = -5;
+            game.obstacle3.velX = -5;
+            game.obstacle4.velX = -5;
+
+            if (game.appa.left == game.obstacle1.left + game.obstacle1.width ||
+                game.appa.left == game.obstacle3.left + game.obstacle3.width ||
+                game.appa.left == game.obstacle2.left + game.obstacle2.width ||
+                game.appa.left == game.obstacle4.left + game.obstacle4.width ) {
+                uptdatePoints(points);
+            }
+
+
+            if (game.appa.left + game.appa.width > game.obstacle1.left &&
+                game.appa.left < game.obstacle1.width + game.obstacle1.left &&
+                game.appa.top < game.obstacle1.top + game.obstacle1.height) {
+                game.obstacle1.velX = 0;
+                game.obstacle2.velX = 0;
+                game.obstacle3.velX = 0;
+                game.obstacle4.velX = 0;
+                game.appa.velY = 0;
+                game.gameover = true;
+
+            }
+            if (game.appa.left + game.appa.width > game.obstacle2.left &&
+                game.appa.top + game.appa.height > game.obstacle2.top &&
+                game.appa.left < game.obstacle2.left + game.obstacle2.width) {
+                game.obstacle1.velX = 0;
+                game.obstacle2.velX = 0;
+                game.obstacle3.velX = 0;
+                game.obstacle4.velX = 0;
+                game.appa.velY = 0;
+                game.gameover = true;
+            }
+
+            if (game.appa.left + game.appa.width > game.obstacle3.left &&
+                game.appa.left < game.obstacle3.left + game.obstacle3.width &&
+                game.appa.top + game.appa.height < game.obstacle3.top + game.obstacle3.height) {
+                game.obstacle1.velX = 0;
+                game.obstacle2.velX = 0;
+                game.obstacle3.velX = 0;
+                game.obstacle4.velX = 0;
+                game.appa.velY = 0;
+                game.gameover = true;
+            }
+
+            if (game.appa.left + game.appa.width > game.obstacle4.left &&
+                game.appa.top + game.appa.height > game.obstacle4.top &&
+                game.appa.left < game.obstacle4.left + game.obstacle4.width) {
+                game.obstacle1.velX = 0;
+                game.obstacle2.velX = 0;
+                game.obstacle3.velX = 0;
+                game.obstacle4.velX = 0;
+                game.appa.velY = 0;
+                game.gameover = true;
+            }
+
+            if (game.appa.top + game.appa.height > game.ground.top) {
+                game.obstacle1.velX = 0;
+                game.obstacle2.velX = 0;
+                game.obstacle3.velX = 0;
+                game.obstacle4.velX = 0;
+                game.appa.velY = 0;
+                game.gameover = true;
+            }
+
+            if (game.obstacle1.left + game.obstacle1.width < 0) {
+                let bottom = Math.floor(Math.random() * 400) + 1;
+                bottom *= -1
+                game.obstacle1.left = gamearea.clientLeft + gamearea.clientWidth + 500;
+                game.obstacle2.left = gamearea.clientLeft + gamearea.clientWidth + 500;
+                game.obstacle1.top = bottom;
+                game.obstacle2.top = game.obstacle1.top + 770;
+            }
+
+            if (game.obstacle3.left + game.obstacle3.width < 0) {
+                let bottom = Math.floor(Math.random() * 400) + 1;
+                bottom *= -1;
+                game.obstacle3.left = gamearea.clientLeft + gamearea.clientWidth + 500;
+                game.obstacle4.left = gamearea.clientLeft + gamearea.clientWidth + 500;
+                game.obstacle3.top = bottom;
+                game.obstacle4.top = game.obstacle3.top + 770;
+            }
+            game.appa.top += game.appa.velY;
+            game.obstacle1.left += game.obstacle1.velX
+            game.obstacle2.left += game.obstacle2.velX
+            game.obstacle3.left += game.obstacle3.velX
+            game.obstacle4.left += game.obstacle4.velX
+            game.appa.graphic.style.top = game.appa.top + 'px';
+            game.appa.graphic.style.left = game.appa.left + 'px';
+            game.obstacle1.graphic.style.top = game.obstacle1.top + 'px';
+            game.obstacle2.graphic.style.top = game.obstacle2.top + 'px';
+            game.obstacle3.graphic.style.top = game.obstacle3.top + 'px';
+            game.obstacle4.graphic.style.top = game.obstacle4.top + 'px';
+            game.obstacle1.graphic.style.left = game.obstacle1.left + 'px';
+            game.obstacle2.graphic.style.left = game.obstacle2.left + 'px';
+            game.obstacle3.graphic.style.left = game.obstacle3.left + 'px';
+            game.obstacle4.graphic.style.left = game.obstacle4.left + 'px';
+
+            if (game.gameover == true) {
+                let elements = document.getElementsByClassName('gameoverrestart');
+                for (let i = 0; i < elements.length; i++) {
+                    elements[i].style.display = 'block';
+                }
+                let columns = document.getElementsByClassName('obstacle')
+                for (let x = 0; x < columns.length; x++) {
+                    columns[x].style.display = 'none'
+                }
+                let appa = document.getElementById('appa')
+                appa.style.display = 'none'
+            }
+        }
+
+        function uptdatePoints() {
+            game.points++
+                let points = document.getElementById('points')
+            points.innerHTML = game.points;
+        }
+
+        var restart = document.querySelector('#restart')
+
+        function restartGame() {
+            location.reload();
+
+        }
+        restart.addEventListener('click', restartGame);
+
+
+        window.onload = init;
+    </script>
+</body>
+
+</html>
